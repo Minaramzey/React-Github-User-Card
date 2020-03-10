@@ -34,12 +34,35 @@ class User extends React.Component {
       .catch(err => console.log(err('You fucked up dude')));
   }
 
+  handleChanges = e => {
+    this.setState({
+      user: e.target.value
+    });
+  };
+
+  fetchFollowers = e => {
+    e.preventDefault();
+    axios
+      .get(`https://api.github.com/users/Minaramzey/${this.state.followers}`)
+      .then(res => {
+        // res.data.message
+        this.setState({
+          followers: res.data.message
+        });
+      })
+      .catch(err => console.log(err.message));
+  };
+
   render() {
     return (
       <div className="cards">
+           <input value={this.followers} onChange={this.handleChanges} />
+          <button onClick={this.fetchFollowers}>Search Followers</button>
         <div className="main-card">
+          
           {
             <UserCard
+            
               login={this.state.user.login}
               id={this.state.user.id}
               avatar_url={this.state.user.avatar_url}
@@ -50,8 +73,10 @@ class User extends React.Component {
         </div>
 
         <div className="followers-card">
+      
           {this.state.followers.map(follower => (
             <UserCard
+            
               login={follower.login}
               id={follower.id}
               avatar_url={follower.avatar_url}
